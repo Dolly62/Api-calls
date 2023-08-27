@@ -3,14 +3,36 @@
     flex-direction: column;
     background: white;
     width: 40rem;
-    margin: 5px auto;
+    margin: 2rem auto;
     border: none;
     border-radius: 12px;
     justify-content: center;
 }
 
+.form label{
+    margin: 0.2rem auto;
+    color: black;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.form textarea{
+    height: 30vh;
+}
+
 .form input, textarea{
     width: 30rem;
-    margin: 4px auto;
+    margin: 0.2rem auto;
+    border: 2px solid grey;
+    border-radius: 15px;
+    height: 6vh;
+    color: rgb(38, 38, 38);
+    font-weight: bolder;
+}
+
+.form button{
+    width: 30rem;
+    margin: 1.5rem auto;
+    margin-bottom: 2rem;
 }
 

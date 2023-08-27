@@ -14,6 +14,9 @@ const Form = () => {
         date: date,
     }]
     console.log(newMovieObj);
+    setTitle("");
+    setOpeningText("")
+    setDate("")
     
   };
 
