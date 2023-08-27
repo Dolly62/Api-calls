@@ -1,0 +1,16 @@
+.form{
+    display: flex;
+    flex-direction: column;
+    background: white;
+    width: 40rem;
+    margin: 5px auto;
+    border: none;
+    border-radius: 12px;
+    justify-content: center;
+}
+
+.form input, textarea{
+    width: 30rem;
+    margin: 4px auto;
+}
+
