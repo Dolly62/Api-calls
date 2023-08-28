@@ -1,16 +1,10 @@
 .form{
     display: flex;
     flex-direction: column;
-    background: white;
-    width: 40rem;
-    margin: 2rem auto;
-    border: none;
-    border-radius: 12px;
     justify-content: center;
 }
 
 .form label{
-    margin: 0.2rem auto;
     color: black;
     font-weight: bold;
     font-size: 1.2rem;
@@ -21,7 +15,7 @@
 }
 
 .form input, textarea{
-    width: 30rem;
+    width: 85%;
     margin: 0.2rem auto;
     border: 2px solid grey;
     border-radius: 15px;
@@ -31,8 +25,7 @@
 }
 
 .form button{
-    width: 30rem;
+    width: 85%;
     margin: 1.5rem auto;
-    margin-bottom: 2rem;
 }
 

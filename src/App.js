@@ -9,29 +9,42 @@ function App() {
   const [error, setError] = useState(null);
   const [retrying, setRetrying] = useState(false);
   const [retryInterval, setRetryInterval] = useState(null);
+  // const [movieList, setMovieList] = useState([]);
 
-
-  const  fetchMoviesHandler = useCallback(async() => {
+  const fetchMoviesHandler = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch("https://swapi.dev/api/films/");
+      const response = await fetch(
+        "https://react-http-7f6ba-default-rtdb.firebaseio.com/movies.json"
+      );
       if (!response.ok) {
         throw new Error("Something went wrong... Retrying");
       }
 
       const data = await response.json();
 
-      const transformMovies = data.results.map((movieData) => {
-        return {
-          id: movieData.episode_id,
-          title: movieData.title,
-          openingText: movieData.opening_crawl,
-          releaseDate: movieData.release_date,
-        };
-      });
-      setMovies(transformMovies);
-      setIsLoading(false);
+      const loadedMovies = [];
+
+      for (const key in data) {
+        loadedMovies.push({
+          id: key,
+          title: data[key].Title,
+          openingText: data[key].OpeningText,
+          releaseDate: data[key].date,
+        });
+      }
+      console.log(loadedMovies);
+      setMovies(loadedMovies);
+
+      // const transformMovies = data.results.map((movieData) => {
+      //   return {
+      //     id: movieData.episode_id,
+      //     title: movieData.title,
+      //     openingText: movieData.opening_crawl,
+      //     releaseDate: movieData.release_date,
+      //   };
+      // });
     } catch (error) {
       setError(error.message);
 
@@ -43,7 +56,24 @@ function App() {
   useEffect(() => {
     fetchMoviesHandler();
     // console.log("useEffect");
-  }, [fetchMoviesHandler])
+  }, [fetchMoviesHandler]);
+
+  async function addMovieHandler(movie) {
+    // console.log(movie);
+    const response = await fetch(
+      "https://react-http-7f6ba-default-rtdb.firebaseio.com/movies.json",
+      {
+        method: "POST",
+        body: JSON.stringify(movie),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const data = await response.json();
+    console.log(data);
+  }
 
   // const dummyMovies = [
   //   {
@@ -60,6 +90,7 @@ function App() {
   //   },
   // ];
 
+  // Cancel or Retry Movie
   const startRetry = () => {
     setRetrying(true);
     const intervalId = setInterval(() => {
@@ -75,19 +106,46 @@ function App() {
     }
   };
 
+  //Delete Movie
+  const deleteMovieHandler = async (movieId) => {
+    try {
+      const response = await fetch(
+        `https://react-http-7f6ba-default-rtdb.firebaseio.com/movies/${movieId}.json`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Something went wrong while deleting movie");
+      }
+
+      setMovies((prevLists) => {
+        const updatedLists = prevLists.filter((movie) => movie.id !== movieId);
+        return updatedLists;
+      });
+    } catch (error) {
+      setError(error.message);
+      console.log("Error deleting movies:", error);
+    }
+  };
+
   return (
     <React.Fragment>
-    <Form/>
+      <section>
+        <Form onAddMovie={addMovieHandler} />
+      </section>
       <section>
         <button onClick={fetchMoviesHandler}>Fetch Movies</button>
       </section>
       <section>
-        {!isLoading && movies.length > 0 && <MoviesList movies={movies} />}
+        {!isLoading && movies.length > 0 && (
+          <MoviesList movies={movies} onDeleteMovie={deleteMovieHandler} />
+        )}
         {!isLoading && movies.length === 0 && !error && <p>Found no movies.</p>}
         {!isLoading && error && (
           <p>
-            {error}{" "}
-            {retrying && <button onClick={cancelRetry}>Cancel</button>}
+            {error} {retrying && <button onClick={cancelRetry}>Cancel</button>}
           </p>
         )}
         {isLoading && <p>Loading...</p>}
